@@ -2,9 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-# Migrations: fix DB variables on the service first, then run once:
-#   railway run php artisan migrate --force
-# (preDeploy was removed so a bad DB config does not block every deploy)
+preDeployCommand = "php artisan migrate --force"
 startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
 healthcheckPath = "/up"
 healthcheckTimeout = 300

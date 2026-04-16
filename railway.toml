@@ -2,8 +2,9 @@
 builder = "NIXPACKS"
 
 [deploy]
-# Runs before the new version goes live (has DB env vars). No Railway “Shell” UI needed.
-preDeployCommand = "php artisan migrate --force"
+# Migrations: fix DB variables on the service first, then run once:
+#   railway run php artisan migrate --force
+# (preDeploy was removed so a bad DB config does not block every deploy)
 startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
 healthcheckPath = "/up"
 healthcheckTimeout = 300

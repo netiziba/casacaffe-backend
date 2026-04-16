@@ -1,6 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+// Serve uploaded files without relying on `public/storage` symlink (works with `php artisan serve` on Railway).
+Route::get('/storage/{path}', function (string $path) {
+    $path = str_replace('..', '', $path);
+    if ($path === '' || ! Storage::disk('public')->exists($path)) {
+        abort(404);
+    }
+
+    return Storage::disk('public')->response($path);
+})->where('path', '.*');
 
 // API-only deploy: avoid default welcome view + session-heavy page on Railway root.
 Route::get('/', function () {

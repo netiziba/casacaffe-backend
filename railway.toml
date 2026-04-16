@@ -2,7 +2,9 @@
 builder = "NIXPACKS"
 
 [deploy]
-preDeployCommand = "php artisan migrate --force && php artisan db:seed --class=AdminSeeder --force && php artisan storage:link --force"
-startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
+# Pre-deploy runs in a different container — do not run storage:link there (symlink would not exist at runtime).
+preDeployCommand = "php artisan migrate --force && php artisan db:seed --class=AdminSeeder --force"
+# Link public/storage → storage/app/public in the same container that serves HTTP.
+startCommand = "php artisan storage:link --force && php artisan serve --host=0.0.0.0 --port=$PORT"
 healthcheckPath = "/up"
 healthcheckTimeout = 300
